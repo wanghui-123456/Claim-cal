@@ -1,0 +1,98 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  background: url(p5.jpg) no-repeat;
+}
+.left-side {
+  width: 350px;
+  height: 554px;
+  padding-top: 20px;
+  padding-left: 75px;
+  position: absolute;
+  top: 40px;
+  left: 200px;
+  background-color: rgba(129, 109, 137, 0.7);
+  border-radius: 15px;
+}
+p {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-size: 18px;
+  font-weight: normal;
+}
+input {
+  outline: none;
+  border: 0;
+  border-radius: 5px;
+  height: 20px;
+  line-height: 20px;
+  vertical-align: top;
+  margin-top: 1px;
+}
+.date,
+.money {
+  height: 30px;
+  background-color: rgb(238, 236, 236);
+  padding-left: 5px;
+}
+.date:focus,
+.money:focus {
+  border: 1px solid rgb(0, 117, 255);
+}
+.btn {
+  width: 200px;
+  height: 50px;
+  position: absolute;
+  left: 78px;
+  bottom: 115px;
+}
+.clear,
+.calculate {
+  outline: none;
+  width: 80px;
+  height: 30px;
+  border-radius: 5px;
+  background-color: rgb(57, 75, 115);
+  color: white;
+  font-size: 16px;
+}
+.right-side {
+  width: 600px;
+  height: 554px;
+  padding-top: 20px;
+  padding-left: 50px;
+  position: absolute;
+  top: 40px;
+  right: 100px;
+  background-color: rgba(129, 109, 137, 0.3);
+  border-radius: 15px;
+}
+.right-side h3 {
+  margin-top: 5px;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+table {
+    width: 500px;
+    border: 1px solid gray;
+    border-collapse: collapse;
+}
+thead tr {
+    height: 30px;
+}
+thead tr th{
+    border: 2px solid gray;
+    background-color: rgb(56, 42, 42);
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+}
+tbody tr td {
+    border: 2px solid gray;
+    font-size: 14px;
+    text-align: center;
+
+}
