@@ -1,68 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>疾病门诊理赔计算器</title>
-    <link rel="stylesheet" href="index.css">
-</head>
+    <link rel="stylesheet" href="index.css" />
+    <script>
+      var arr = [];
 
-<body>
-    <!-- 左侧是计算器面板 -->
-    <div class="left-side">
+      /**
+       * 遍历渲染table表格
+       */
+      function list() {
+        var tbody = document.querySelector("tbody");
+        //清空tbody里面的内容
+        tbody.innerHTML = "";
+
+        //遍历arr数组，动态渲染table
+        for (var i = 0; i < arr.length; i++) {
+          tbody.appendChild(createTr(i, arr[i]));
+        }
+      }
+
+      /**
+       * 创建tr节点
+       */
+      function createTr(index, data) {
+        var tr = document.createElement("tr");
+
+        var indexNode = document.createElement("td");
+        indexNode.innerText = index + 1;
+
+        var dateNode = document.createElement("td");
+        dateNode.innerText = data.date;
+
+        var moneyNode = document.createElement("td");
+        moneyNode.innerText = data.money;
+
+        var opreationNode = document.createElement("td");
+        opreationNode.innerHTML =
+          "<span onclick='del(" + index + ")'>删除<span>";
+
+        tr.appendChild(indexNode);
+        tr.appendChild(dateNode);
+        tr.appendChild(moneyNode);
+        tr.appendChild(opreationNode);
+
+        return tr;
+      }
+
+      /**
+       *  向表格中追加数据
+       */
+      function add() {
+        var date = document.querySelector("#date");
+        if (!!!date.value) {
+          alert("日期不能为空");
+          return;
+        }
+        var money = document.querySelector("#money");
+        if (!!!money.value) {
+          alert("金额不能为空");
+          return;
+        }
+        var data = {
+          date: date.value,
+          money: money.value,
+        };
+        arr.push(data);
+
+        date.value = "";
+        money.value = "";
+
+        list();
+      }
+
+      function del(index) {
+        arr.splice(index, 1);
+
+        list();
+      }
+
+      function calculate() {
+        var result = document.querySelector("#result");
+
+        //理赔方案
+        var insurancePlan = document.querySelector(
+          '[name="insurancePlan"]:checked'
+        ).value;
+        insurancePlan = parseInt(insurancePlan);
+
+        var res = 0.0;
+        if (insurancePlan === 800) {
+          res = type1();
+        } else if (insurancePlan === 1000 || insurancePlan === 1200) {
+          res = type2();
+        } else {
+          res = type3();
+        }
+
+        result.innerText = res;
+
+        //显示结果
+        var resNode = document.querySelector("#result-detail");
+        resNode.style.display = "block";
+      }
+
+      //方案1的计算方式
+      function type1() {
+        //起付线
+        var startLine = 600;
+
+        //日期数据去重
+        var map = new Map();
+        for (var i = 0; i < arr.length; i++) {
+          var date = arr[i].date;
+          var money = arr[i].money;
+
+          if (!!!map.get(date)) {
+            map.set(date, money);
+          } else {
+            var money1 = map.get(date);
+            map.set(date, parseFloat(money + money1));
+          }
+        }
+
+        var arr1 = [];
+        map.forEach(function (value, key) {
+          arr1.push({
+            date: key,
+            money: value,
+          });
+        });
+
+        //学生付款累计
+        var sum = 0;
+        for (var i = 0; i < arr1.length; i++) {
+          var money = arr1[i].money;
+          if (money >= 600) {
+            sum += parseFloat(600);
+          } else {
+            sum += parseFloat(money);
+          }
+        }
+
+        //判断是否符合赔偿标准
+        var res = 0.0;
+        if (sum < 650) {
+          alert("对不起，你的金额[" + sum + "]未达到起付标准");
+        } else {
+          res = parseFloat((sum - 650) * 0.85);
+        }
+        return res;
+      }
+
+      //方案2的计算方式
+      function type2() {
+        //学生付款累计
+        var sum = 0;
+        for (var i = 0; i < arr.length; i++) {
+          var money = arr[i].money;
+          sum += parseFloat(money);
+        }
+        //判断是否符合赔偿标准
+        var res = 0.0;
+        if (sum < 650) {
+          alert("对不起，你的金额[" + sum + "]未达到起付标准");
+        } else {
+          res = parseFloat((sum - 650) * 0.85);
+        }
+        return res;
+      }
+
+      function type3() {
+        //学生付款累计
+        var sum = 0;
+        for (var i = 0; i < arr.length; i++) {
+          var money = arr[i].money;
+          sum += parseFloat(money);
+        }
+        //判断是否符合赔偿标准
+        var res = 0.0;
+        if (sum <= 0.0) {
+          alert("对不起，你的金额[" + sum + "]未达到起付标准");
+        } else {
+          res = parseFloat(sum * 0.85);
+        }
+        return res;
+      }
+
+      window.onkeypress = function () {
+        if (event.keyCode == 13) {
+          add();
+        }
+      };
+      function deleteAll() {
+        arr = [];
+        list();
+
+        //隐藏结果
+        var resNode = document.querySelector("#result-detail");
+        resNode.style.display = "none";
+      }
+    </script>
+  </head>
+
+  <body>
+    <div class="wrap">
+      <!-- 左侧是计算器面板 -->
+      <div class="left-side">
         <h1>理赔计算器</h1>
         <form action="">
-            <p>请选择保险方案：</p>
-            <label><input type="radio" name="insurancePlan" checked /> 留学生800元方案 </label><br>
-            <label><input type="radio" name="insurancePlan" /> 留学生1000元方案</label><br>
-            <label><input type="radio" name="insurancePlan" /> 留学生1200元方案 </label><br>
-            <label><input type="radio" name="insurancePlan" /> 留学生2800元方案</label>
+          <p>请选择保险方案：</p>
+          <label
+            ><input type="radio" name="insurancePlan" value="800" checked />
+            留学生800元方案 </label
+          ><br />
+          <label
+            ><input type="radio" name="insurancePlan" value="1000" />
+            留学生1000元方案</label
+          ><br />
+          <label
+            ><input type="radio" name="insurancePlan" value="1200" />
+            留学生1200元方案 </label
+          ><br />
+          <label
+            ><input type="radio" name="insurancePlan" value="2800" />
+            留学生2800元方案</label
+          >
 
-            <p>请选择日期：</p>
-            <input type="text" placeholder="请选择日期" class="date">
+          <p>请选择日期：</p>
+          <input type="text" placeholder="请选择日期" id="date" class="date" />
 
-            <p>请输入金额：</p>
-            <input type="text" placeholder="请输入金额" class="money">
+          <p>请输入金额：</p>
+          <input
+            type="text"
+            placeholder="请输入金额"
+            id="money"
+            class="money"
+          />
 
-            <div class="btn">
-                <button type="submit" class="calculate">开始计算</button>
-                <button type="reset" class="clear">清空重置</button>
-            </div>
-
+            <button type="reset" class="clear" onclick="deleteAll()">
+              清空重置
+            </button>
         </form>
-    </div>
+      </div>
 
-
-    <!-- 右侧显示输入数据表格展示，计算结果和计算详情 -->
-    <div class="right-side">
+      <!-- 右侧显示输入数据表格展示，计算结果和计算详情 -->
+      <div class="right-side">
         <h3>详情展示</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>序号</th>
-                    <th>日期</th>
-                    <th>金额(元)</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>2020-01-01</td>
-                    <td>123.00</td>
-                    <td>删除</td>
-                </tr>
-            </tbody>
+        <table id="table">
+          <thead>
+            <tr>
+              <th>序号</th>
+              <th>日期</th>
+              <th>金额(元)</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
         </table>
+        <button type="button" class="calculate" onclick="calculate()">
+            开始计算
+        </button>
         <div class="detail-info">
-            <p>您可获得的理赔金额为：
-                <i> 123.00元</i>
-            </p>
+          <p id="result-detail" style="display: none">
+            您可获得的理赔金额为： <i id="result"> 0.00 </i> 元
+          </p>
         </div>
-
+      </div>
     </div>
-</body>
-
+  </body>
 </html>

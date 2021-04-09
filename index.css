@@ -6,14 +6,17 @@
 body {
   background: url(p5.jpg) no-repeat;
 }
+.wrap {
+  width: 1000px;
+  height: 554px;
+  margin: 50px auto;
+}
 .left-side {
   width: 350px;
   height: 554px;
-  padding-top: 20px;
-  padding-left: 75px;
-  position: absolute;
-  top: 40px;
-  left: 200px;
+  float: left;
+  padding-left: 44px;
+  padding-top: 10px;
   background-color: rgba(129, 109, 137, 0.7);
   border-radius: 15px;
 }
@@ -42,15 +45,10 @@ input {
 .money:focus {
   border: 1px solid rgb(0, 117, 255);
 }
-.btn {
-  width: 200px;
-  height: 50px;
-  position: absolute;
-  left: 78px;
-  bottom: 115px;
-}
 .clear,
 .calculate {
+  display: block;
+  margin-top: 15px;
   outline: none;
   width: 80px;
   height: 30px;
@@ -59,14 +57,13 @@ input {
   color: white;
   font-size: 16px;
 }
+
 .right-side {
   width: 600px;
   height: 554px;
-  padding-top: 20px;
-  padding-left: 50px;
-  position: absolute;
-  top: 40px;
-  right: 100px;
+  float: right;
+  padding-left: 40px;
+  padding-top: 10px;
   background-color: rgba(129, 109, 137, 0.3);
   border-radius: 15px;
 }
@@ -94,5 +91,8 @@ tbody tr td {
     border: 2px solid gray;
     font-size: 14px;
     text-align: center;
-
+}
+tbody tr td:last-child{
+  cursor: pointer;
+  color: red;
 }
