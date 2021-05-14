@@ -6,204 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>疾病门诊理赔计算器</title>
     <link rel="stylesheet" href="index.css" />
-    <script>
-      var arr = [];
-
-      /**
-       * 遍历渲染table表格
-       */
-      function list() {
-        var tbody = document.querySelector("tbody");
-        //清空tbody里面的内容
-        tbody.innerHTML = "";
-
-        //遍历arr数组，动态渲染table
-        for (var i = 0; i < arr.length; i++) {
-          tbody.appendChild(createTr(i, arr[i]));
-        }
-      }
-
-      /**
-       * 创建tr节点
-       */
-      function createTr(index, data) {
-        var tr = document.createElement("tr");
-
-        var indexNode = document.createElement("td");
-        indexNode.innerText = index + 1;
-
-        var dateNode = document.createElement("td");
-        dateNode.innerText = data.date;
-
-        var moneyNode = document.createElement("td");
-        moneyNode.innerText = data.money;
-
-        var opreationNode = document.createElement("td");
-        opreationNode.innerHTML =
-          "<span onclick='del(" + index + ")'>删除<span>";
-
-        tr.appendChild(indexNode);
-        tr.appendChild(dateNode);
-        tr.appendChild(moneyNode);
-        tr.appendChild(opreationNode);
-
-        return tr;
-      }
-
-      /**
-       *  向表格中追加数据
-       */
-      function add() {
-        var date = document.querySelector("#date");
-        if (!!!date.value) {
-          alert("日期不能为空");
-          return;
-        }
-        var money = document.querySelector("#money");
-        if (!!!money.value) {
-          alert("金额不能为空");
-          return;
-        }
-        var data = {
-          date: date.value,
-          money: money.value,
-        };
-        arr.push(data);
-
-        date.value = "";
-        money.value = "";
-
-        list();
-      }
-
-      function del(index) {
-        arr.splice(index, 1);
-
-        list();
-      }
-
-      function calculate() {
-        var result = document.querySelector("#result");
-
-        //理赔方案
-        var insurancePlan = document.querySelector(
-          '[name="insurancePlan"]:checked'
-        ).value;
-        insurancePlan = parseInt(insurancePlan);
-
-        var res = 0.0;
-        if (insurancePlan === 800) {
-          res = type1();
-        } else if (insurancePlan === 1000 || insurancePlan === 1200) {
-          res = type2();
-        } else {
-          res = type3();
-        }
-
-        result.innerText = res;
-
-        //显示结果
-        var resNode = document.querySelector("#result-detail");
-        resNode.style.display = "block";
-      }
-
-      //方案1的计算方式
-      function type1() {
-        //起付线
-        var startLine = 600;
-
-        //日期数据去重
-        var map = new Map();
-        for (var i = 0; i < arr.length; i++) {
-          var date = arr[i].date;
-          var money = arr[i].money;
-
-          if (!!!map.get(date)) {
-            map.set(date, money);
-          } else {
-            var money1 = map.get(date);
-            map.set(date, parseFloat(money + money1));
-          }
-        }
-
-        var arr1 = [];
-        map.forEach(function (value, key) {
-          arr1.push({
-            date: key,
-            money: value,
-          });
-        });
-
-        //学生付款累计
-        var sum = 0;
-        for (var i = 0; i < arr1.length; i++) {
-          var money = arr1[i].money;
-          if (money >= 600) {
-            sum += parseFloat(600);
-          } else {
-            sum += parseFloat(money);
-          }
-        }
-
-        //判断是否符合赔偿标准
-        var res = 0.0;
-        if (sum < 650) {
-          alert("对不起，你的金额[" + sum + "]未达到起付标准");
-        } else {
-          res = parseFloat((sum - 650) * 0.85);
-        }
-        return res;
-      }
-
-      //方案2的计算方式
-      function type2() {
-        //学生付款累计
-        var sum = 0;
-        for (var i = 0; i < arr.length; i++) {
-          var money = arr[i].money;
-          sum += parseFloat(money);
-        }
-        //判断是否符合赔偿标准
-        var res = 0.0;
-        if (sum < 650) {
-          alert("对不起，你的金额[" + sum + "]未达到起付标准");
-        } else {
-          res = parseFloat((sum - 650) * 0.85);
-        }
-        return res;
-      }
-
-      function type3() {
-        //学生付款累计
-        var sum = 0;
-        for (var i = 0; i < arr.length; i++) {
-          var money = arr[i].money;
-          sum += parseFloat(money);
-        }
-        //判断是否符合赔偿标准
-        var res = 0.0;
-        if (sum <= 0.0) {
-          alert("对不起，你的金额[" + sum + "]未达到起付标准");
-        } else {
-          res = parseFloat(sum * 0.85);
-        }
-        return res;
-      }
-
-      window.onkeypress = function () {
-        if (event.keyCode == 13) {
-          add();
-        }
-      };
-      function deleteAll() {
-        arr = [];
-        list();
-
-        //隐藏结果
-        var resNode = document.querySelector("#result-detail");
-        resNode.style.display = "none";
-      }
-    </script>
   </head>
 
   <body>
@@ -241,9 +43,9 @@
             class="money"
           />
 
-            <button type="reset" class="clear" onclick="deleteAll()">
-              清空重置
-            </button>
+          <button type="reset" class="clear" onclick="deleteAll()">
+            清空重置
+          </button>
         </form>
       </div>
 
@@ -262,7 +64,7 @@
           <tbody></tbody>
         </table>
         <button type="button" class="calculate" onclick="calculate()">
-            开始计算
+          开始计算
         </button>
         <div class="detail-info">
           <p id="result-detail" style="display: none">
@@ -273,3 +75,231 @@
     </div>
   </body>
 </html>
+<script src="laydate/laydate.js"></script>
+<script src="jquery-3.6.0.min.js"></script>
+<script src="layer/layer.js"></script>
+<script>
+  var arr = [];
+  laydate.render({
+    elem: "#date", //指定元素
+  });
+
+  /**
+   * 遍历渲染table表格
+   */
+  function list() {
+    var tbody = document.querySelector("tbody");
+    //清空tbody里面的内容
+    tbody.innerHTML = "";
+
+    //遍历arr数组，动态渲染table
+    for (var i = 0; i < arr.length; i++) {
+      tbody.appendChild(createTr(i, arr[i]));
+    }
+  }
+
+  /**
+   * 创建tr节点
+   */
+  function createTr(index, data) {
+    var tr = document.createElement("tr");
+
+    var indexNode = document.createElement("td");
+    indexNode.innerText = index + 1;
+
+    var dateNode = document.createElement("td");
+    dateNode.innerText = data.date;
+
+    var moneyNode = document.createElement("td");
+    moneyNode.innerText = data.money;
+
+    var opreationNode = document.createElement("td");
+    opreationNode.innerHTML = "<span onclick='del(" + index + ")'>删除<span>";
+
+    tr.appendChild(indexNode);
+    tr.appendChild(dateNode);
+    tr.appendChild(moneyNode);
+    tr.appendChild(opreationNode);
+
+    return tr;
+  }
+
+  /**
+   *  向表格中追加数据
+   */
+  function add() {
+    var date = document.querySelector("#date");
+    if (!!!date.value) {
+      layer.alert("日期不能为空", {
+        icon: 2,
+        skin: "layer-ext-demo",
+      });
+      return;
+    }
+    var money = document.querySelector("#money");
+    if (!!!money.value) {
+      layer.alert("金额不能为空", {
+        icon: 2,
+        skin: "layer-ext-demo",
+      });
+      return;
+    }
+    var data = {
+      date: date.value,
+      money: money.value,
+    };
+    arr.push(data);
+
+    date.value = "";
+    money.value = "";
+
+    list();
+  }
+
+  function del(index) {
+    arr.splice(index, 1);
+
+    list();
+  }
+
+  function calculate() {
+    var result = document.querySelector("#result");
+
+    //理赔方案
+    var insurancePlan = document.querySelector('[name="insurancePlan"]:checked')
+      .value;
+    insurancePlan = parseInt(insurancePlan);
+
+    // var res = 0.0;
+    var res = calculateMoney(insurancePlan)
+    // if (insurancePlan === 800) {
+    //   res = type1();
+    // } else if (insurancePlan === 1000 || insurancePlan === 1200) {
+    //   res = type2();
+    // } else {
+    //   res = type3();
+    // }
+
+    result.innerText = res;
+
+    //显示结果
+    var resNode = document.querySelector("#result-detail");
+    resNode.style.display = "block";
+  }
+
+  //方案1的计算方式
+  function type1() {
+    //起付线
+    var startLine = 600;
+
+    //日期数据去重
+    var map = new Map();
+    for (var i = 0; i < arr.length; i++) {
+      var date = arr[i].date;
+      var money = arr[i].money;
+
+      if (!!!map.get(date)) {
+        map.set(date, money);
+      } else {
+        var money1 = map.get(date);
+        map.set(date, parseFloat(money + money1));
+      }
+    }
+
+    var arr1 = [];
+    map.forEach(function (value, key) {
+      arr1.push({
+        date: key,
+        money: value,
+      });
+    });
+
+    //学生付款累计
+    var sum = 0;
+    for (var i = 0; i < arr1.length; i++) {
+      var money = arr1[i].money;
+      if (money >= 600) {
+        sum += parseFloat(600);
+      } else {
+        sum += parseFloat(money);
+      }
+    }
+    return sum;
+  }
+
+  //方案2的计算方式
+  function type2() {
+    //学生付款累计
+    var sum = 0;
+    for (var i = 0; i < arr.length; i++) {
+      var money = arr[i].money;
+      sum += parseFloat(money);
+    }
+    return sum;
+  }
+
+  function type3() {
+    //学生付款累计
+    var sum = 0;
+    for (var i = 0; i < arr.length; i++) {
+      var money = arr[i].money;
+      sum += parseFloat(money);
+    }
+    return sum;
+  }
+
+  function calculateMoney(type = 800) {
+    var is_miss = false; //判断是否达到起伏标准
+    var calculateTotal = 0.0; // 判断需要用到的金额 未做百分比计算之前
+    var resultTotal = 0.0; //返回最终金额
+    switch (type) {
+      case 2:
+        calculateTotal = type2(1000);
+        if (calculateTotal < 650) {
+          is_miss = true;
+        } else {
+          resultTotal = parseFloat((calculateTotal - 650) * 0.85);
+        }
+        break;
+      case 3:
+      calculateTotal = type2(1200);
+        if (calculateTotal < 0.0) {
+          is_miss = true;
+        } else {
+          resultTotal = parseFloat((calculateTotal - 650) * 0.85);
+        }
+        break;
+      default:
+        calculateTotal = type1();
+        if (calculateTotal < 650) {
+          is_miss = true;
+        } else {
+          resultTotal = parseFloat((calculateTotal - 650) * 0.85);
+        }
+        break;
+    }
+    if (is_miss == true) {
+      layer.alert("对不起，你的金额[" + calculateTotal + "]未达到起付标准", {
+        icon: 2,
+        skin: "layer-ext-demo",
+      });
+      return false;
+    } else {
+      return resultTotal;
+    }
+  }
+
+  window.onkeypress = function () {
+    if (event.keyCode == 13) {
+      add();
+    }
+  };
+  function deleteAll() {
+    arr = [];
+    list();
+
+    //隐藏结果
+    var resNode = document.querySelector("#result-detail");
+    resNode.style.display = "none";
+  }
+</script>
