@@ -72,7 +72,7 @@ input {
   margin-bottom: 10px;
   font-size: 18px;
 }
-table {
+#table {
     width: 500px;
     border: 1px solid gray;
     border-collapse: collapse;
